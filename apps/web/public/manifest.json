@@ -9,7 +9,11 @@
   "orientation": "any",
   "scope": "/",
   "lang": "zh-CN",
-  "categories": ["productivity", "business", "education"],
+  "categories": [
+    "productivity",
+    "business",
+    "education"
+  ],
   "icons": [
     {
       "src": "/favicon.ico",
@@ -24,7 +28,7 @@
     },
     {
       "src": "/logo/logo_drawnix_h.svg",
-      "sizes": "512x512", 
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
@@ -37,7 +41,7 @@
       "form_factor": "wide"
     },
     {
-      "src": "/product_showcase/case-2.png", 
+      "src": "/product_showcase/case-2.png",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide"
