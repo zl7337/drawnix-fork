@@ -1,5 +1,6 @@
 import {
   ExportImageIcon,
+  ExportPDFIcon,
   GithubIcon,
   OpenFileIcon,
   SaveFileIcon,
@@ -18,6 +19,7 @@ import { loadFromJSON, saveAsJSON } from '../../../data/json';
 import MenuItem from '../../menu/menu-item';
 import MenuItemLink from '../../menu/menu-item-link';
 import { saveAsImage } from '../../../utils/image';
+import { saveAsPDF } from '../../../utils/pdf';
 import { useDrawnix } from '../../../hooks/use-drawnix';
 import Menu from '../../menu/menu';
 import { useContext } from 'react';
@@ -81,7 +83,7 @@ export const SaveAsImage = () => {
       icon={ExportImageIcon}
       data-testid="image-export-button"
       onSelect={() => {
-        saveAsImage(board, true);
+        saveAsImage(board, true).catch(console.error);
       }}
       submenu={
         <Menu onSelect={() => {
@@ -93,7 +95,7 @@ export const SaveAsImage = () => {
         }}>
           <MenuItem
             onSelect={() => {
-              saveAsImage(board, true);
+              saveAsImage(board, true).catch(console.error);
             }}
             aria-label={'透明背景'}
           >
@@ -101,7 +103,7 @@ export const SaveAsImage = () => {
           </MenuItem>
           <MenuItem
             onSelect={() => {
-              saveAsImage(board, false);
+              saveAsImage(board, false).catch(console.error);
             }}
             aria-label={'白色背景'}
           >
@@ -117,6 +119,75 @@ export const SaveAsImage = () => {
   );
 };
 SaveAsImage.displayName = 'SaveAsImage';
+
+export const SaveAsPDF = () => {
+  const board = useBoard();
+  const menuContentProps = useContext(MenuContentPropsContext);
+  return (
+    <MenuItem
+      icon={ExportPDFIcon}
+      data-testid="pdf-export-button"
+      onSelect={() => {
+        saveAsPDF(board, { quality: 'medium' }).catch(console.error);
+      }}
+      submenu={
+        <Menu onSelect={() => {
+          const itemSelectEvent = new CustomEvent(EVENT.MENU_ITEM_SELECT, {
+            bubbles: true,
+            cancelable: true,
+          });
+          menuContentProps.onSelect?.(itemSelectEvent);
+        }}>
+          <MenuItem
+            onSelect={() => {
+              saveAsPDF(board, { orientation: 'landscape', format: 'a4', quality: 'medium' }).catch(console.error);
+            }}
+            aria-label={'横向A4 (推荐)'}
+          >
+            横向 A4 (推荐)
+          </MenuItem>
+          <MenuItem
+            onSelect={() => {
+              saveAsPDF(board, { orientation: 'portrait', format: 'a4', quality: 'medium' }).catch(console.error);
+            }}
+            aria-label={'纵向A4'}
+          >
+            纵向 A4
+          </MenuItem>
+          <MenuItem
+            onSelect={() => {
+              saveAsPDF(board, { orientation: 'landscape', format: 'a4', quality: 'low' }).catch(console.error);
+            }}
+            aria-label={'快速导出 (小文件)'}
+          >
+            快速导出 (小文件)
+          </MenuItem>
+          <MenuItem
+            onSelect={() => {
+              saveAsPDF(board, { orientation: 'landscape', format: 'a4', quality: 'high' }).catch(console.error);
+            }}
+            aria-label={'高质量 (大文件)'}
+          >
+            高质量 (大文件)
+          </MenuItem>
+          <MenuItem
+            onSelect={() => {
+              saveAsPDF(board, { orientation: 'landscape', format: 'a3', quality: 'medium' }).catch(console.error);
+            }}
+            aria-label={'横向A3'}
+          >
+            横向 A3
+          </MenuItem>
+        </Menu>
+      }
+      shortcut={`Cmd+Shift+P`}
+      aria-label={'导出PDF'}
+    >
+      {'导出PDF'}
+    </MenuItem>
+  );
+};
+SaveAsPDF.displayName = 'SaveAsPDF';
 
 export const CleanBoard = () => {
   const { appState, setAppState } = useDrawnix();
