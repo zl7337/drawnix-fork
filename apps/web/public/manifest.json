@@ -1,0 +1,60 @@
+{
+  "name": "Drawnix - 开源白板工具",
+  "short_name": "Drawnix",
+  "description": "强大的开源白板工具，支持思维导图、流程图、PDF导出等功能",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2196f3",
+  "orientation": "any",
+  "scope": "/",
+  "lang": "zh-CN",
+  "categories": ["productivity", "business", "education"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logo/logo_drawnix_h.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo/logo_drawnix_h.svg",
+      "sizes": "512x512", 
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/product_showcase/case-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/product_showcase/case-2.png", 
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "新建白板",
+      "short_name": "新建",
+      "description": "创建一个新的白板",
+      "url": "/",
+      "icons": [
+        {
+          "src": "/logo/logo_drawnix_h.svg",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
