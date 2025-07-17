@@ -200,9 +200,9 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // 默认策略：网络优先，缓存后备
+  // 默认策略：网络优先，缓存后备，增加重试机制
   event.respondWith(
-    fetch(request)
+    fetchWithRetry(request)
       .then((response) => {
         if (response.status === 200) {
           const responseToCache = response.clone();
@@ -227,6 +227,39 @@ self.addEventListener('fetch', (event) => {
       })
   );
 });
+
+// 带重试机制的fetch函数
+async function fetchWithRetry(request, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+      
+      const response = await fetch(request, {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (response.ok) {
+        return response;
+      }
+      
+      if (i === retries) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+    } catch (error) {
+      console.log(`Fetch attempt ${i + 1} failed:`, error.message);
+      
+      if (i === retries) {
+        throw error;
+      }
+      
+      // 指数退避重试
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+    }
+  }
+}
 
 // 监听消息事件，用于更新缓存
 self.addEventListener('message', (event) => {

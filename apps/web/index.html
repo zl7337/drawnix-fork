@@ -350,6 +350,83 @@
       if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
         console.log('应用正在 PWA 模式下运行');
         document.documentElement.classList.add('pwa-mode');
+        
+        // PWA模式下的网络连接检测
+        checkPWAConnectivity();
+      }
+      
+      // PWA 网络连接检测和处理
+      function checkPWAConnectivity() {
+        // 检测网络连接
+        function testConnection() {
+          return fetch('/', { 
+            method: 'HEAD',
+            cache: 'no-cache',
+            signal: AbortSignal.timeout(5000)
+          }).then(() => true).catch(() => false);
+        }
+        
+        // 如果连接失败，显示网络提示
+        testConnection().then(connected => {
+          if (!connected) {
+            showNetworkIssueAlert();
+          }
+        });
+        
+        // 定期检查连接状态
+        setInterval(() => {
+          if (!navigator.onLine) {
+            showNetworkIssueAlert();
+          }
+        }, 30000); // 每30秒检查一次
+      }
+      
+      // 显示网络问题提示
+      function showNetworkIssueAlert() {
+        if (document.querySelector('.network-issue-alert')) return;
+        
+        const alert = document.createElement('div');
+        alert.className = 'network-issue-alert';
+        alert.innerHTML = `
+          <div style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 10002;
+            max-width: 350px;
+            text-align: center;
+            font-family: system-ui, -apple-system, sans-serif;
+          ">
+            <div style="font-size: 24px; margin-bottom: 12px;">🌐</div>
+            <div style="font-size: 16px; margin-bottom: 16px; font-weight: 500;">
+              网络连接问题
+            </div>
+            <div style="font-size: 14px; line-height: 1.5; margin-bottom: 20px; opacity: 0.9;">
+              PWA应用可能需要特定的网络环境。<br>
+              如果问题持续，请尝试：<br>
+              • 切换到浏览器中使用<br>
+              • 检查网络设置<br>
+              • 或联系管理员
+            </div>
+            <button onclick="window.location.reload()" 
+                    style="background: #2196f3; color: white; border: none; 
+                           padding: 10px 20px; border-radius: 6px; cursor: pointer; margin-right: 10px;">
+              重试连接
+            </button>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    style="background: transparent; color: white; border: 1px solid white; 
+                           padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+              关闭
+            </button>
+          </div>
+        `;
+        document.body.appendChild(alert);
       }
       
       // iOS Safari 特殊处理
