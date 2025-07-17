@@ -1,7 +1,7 @@
 {
   "name": "Drawnix - 开源白板工具",
   "short_name": "Drawnix",
-  "description": "强大的开源白板工具，支持思维导图、流程图、PDF导出等功能",
+  "description": "强大的开源白板工具，支持思维导图、流程图、PDF导出等功能。现已支持PWA安装！",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
