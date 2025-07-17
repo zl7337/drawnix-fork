@@ -122,6 +122,56 @@
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           window.location.reload();
         });
+        
+        // 监听网络状态
+        window.addEventListener('online', () => {
+          console.log('应用已联网');
+          // 移除离线提示（如果有的话）
+          const offlineAlert = document.querySelector('.offline-alert');
+          if (offlineAlert) {
+            offlineAlert.remove();
+          }
+        });
+        
+        window.addEventListener('offline', () => {
+          console.log('应用已离线，但仍可使用基本功能');
+          showOfflineAlert();
+        });
+      }
+      
+      // 显示离线提示
+      function showOfflineAlert() {
+        // 避免重复显示
+        if (document.querySelector('.offline-alert')) return;
+        
+        const alert = document.createElement('div');
+        alert.className = 'offline-alert';
+        alert.innerHTML = `
+          <div style="
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff6b35;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10001;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+          ">
+            🌐 离线模式 - 基本功能仍可使用，但导出功能可能受限
+          </div>
+        `;
+        document.body.appendChild(alert);
+        
+        // 5秒后自动隐藏
+        setTimeout(() => {
+          if (alert.parentNode) {
+            alert.remove();
+          }
+        }, 5000);
       }
       
       // PWA 安装提示

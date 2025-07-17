@@ -10,7 +10,26 @@ const STATIC_ASSETS = [
   '/logo/logo_drawnix_h.svg',
   '/logo/logo_drawnix_h_dark.svg',
   '/robots.txt',
-  '/sitemap.xml'
+  '/sitemap.xml',
+  '/manifest.json'
+];
+
+// 需要缓存的动态资源模式
+const CACHE_PATTERNS = [
+  /^\/assets\/.*\.(js|css|svg|png|jpg|jpeg|gif|ico|woff|woff2|ttf)$/,
+  /^\/src\/.*\.(js|ts|tsx|jsx|css|scss)$/,
+  /^\/node_modules\/.*\.(js|css)$/,
+  /jspdf/i,
+  /plait/i,
+  /react/i,
+  /vite/i,
+  /html2canvas/
+];
+
+// 预缓存网络字体
+const FONT_CACHE = [
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap',
+  'https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2'
 ];
 
 // 安装事件 - 缓存静态资源
@@ -18,14 +37,26 @@ self.addEventListener('install', (event) => {
   console.log('Service Worker: Installing...');
   
   event.waitUntil(
-    caches.open(STATIC_CACHE_NAME)
-      .then((cache) => {
-        console.log('Service Worker: Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .catch((error) => {
-        console.error('Service Worker: Failed to cache static assets', error);
-      })
+    Promise.all([
+      // 缓存静态资源
+      caches.open(STATIC_CACHE_NAME)
+        .then((cache) => {
+          console.log('Service Worker: Caching static assets');
+          return cache.addAll(STATIC_ASSETS);
+        }),
+      // 缓存字体资源
+      caches.open(STATIC_CACHE_NAME)
+        .then((cache) => {
+          console.log('Service Worker: Caching fonts');
+          return Promise.allSettled(
+            FONT_CACHE.map(url => 
+              cache.add(url).catch(err => console.log('Font cache failed for:', url, err))
+            )
+          );
+        })
+    ]).catch((error) => {
+      console.error('Service Worker: Failed to cache resources', error);
+    })
   );
   
   // 强制激活新的 service worker
@@ -58,6 +89,39 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   
+  // 处理外部字体和 CDN 资源
+  if (url.hostname === 'fonts.googleapis.com' || 
+      url.hostname === 'fonts.gstatic.com' ||
+      url.hostname === 'cdn.jsdelivr.net' ||
+      url.hostname === 'unpkg.com') {
+    
+    event.respondWith(
+      caches.match(request)
+        .then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+          
+          return fetch(request)
+            .then((response) => {
+              if (response.status === 200) {
+                const responseToCache = response.clone();
+                caches.open(STATIC_CACHE_NAME)
+                  .then((cache) => {
+                    cache.put(request, responseToCache);
+                  });
+              }
+              return response;
+            })
+            .catch(() => {
+              console.log('Network failed for external resource:', request.url);
+              return new Response('', { status: 404 });
+            });
+        })
+    );
+    return;
+  }
+  
   // 只处理同源请求
   if (url.origin !== location.origin) {
     return;
@@ -71,7 +135,11 @@ self.addEventListener('fetch', (event) => {
       url.pathname.endsWith('.css') ||
       url.pathname.endsWith('.png') ||
       url.pathname.endsWith('.svg') ||
-      url.pathname.endsWith('.ico')) {
+      url.pathname.endsWith('.ico') ||
+      url.pathname.endsWith('.woff') ||
+      url.pathname.endsWith('.woff2') ||
+      url.pathname.endsWith('.ttf') ||
+      CACHE_PATTERNS.some(pattern => pattern.test(url.pathname))) {
     
     event.respondWith(
       caches.match(request)

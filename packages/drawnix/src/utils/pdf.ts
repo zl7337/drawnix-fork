@@ -14,6 +14,18 @@ export const saveAsPDF = async (
   options: PdfExportOptions = {}
 ) => {
   try {
+    // 检查网络状态
+    if (!navigator.onLine) {
+      const useOffline = confirm(
+        '当前处于离线状态，PDF导出功能可能受限。\n' +
+        '建议联网后使用以获得最佳效果。\n' +
+        '是否仍要继续导出？'
+      );
+      if (!useOffline) {
+        return;
+      }
+    }
+    
     console.log('开始导出PDF...');
     const selectedElements = getSelectedElements(board);
     const isFullBoard = selectedElements.length === 0;
