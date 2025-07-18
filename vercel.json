@@ -2,7 +2,6 @@
   "buildCommand": "npm run build:web",
   "outputDirectory": "dist/apps/web",
   "installCommand": "npm install",
-  "framework": null,
   "cleanUrls": true,
   "trailingSlash": false,
   "env": {
