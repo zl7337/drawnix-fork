@@ -1,7 +1,7 @@
 {
   "name": "Drawnix - 开源白板工具",
   "short_name": "Drawnix",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "强大的开源白板工具，支持思维导图、流程图、PDF导出等功能。现已支持PWA安装！新增双向转换功能：Markdown/Mermaid ↔ Drawnix",
   "start_url": "https://drawnix-zl7337.top/",
   "id": "https://drawnix-zl7337.top/",

@@ -1,6 +1,6 @@
-const CACHE_NAME = 'drawnix-v1.1.0'; // 🔄 版本更新 - 双向转换功能
-const STATIC_CACHE_NAME = 'drawnix-static-v1.1.0';
-const DYNAMIC_CACHE_NAME = 'drawnix-dynamic-v1.1.0';
+const CACHE_NAME = 'drawnix-v1.1.1-' + Date.now(); // 🔄 强制缓存破解
+const STATIC_CACHE_NAME = 'drawnix-static-v1.1.1-' + Date.now();
+const DYNAMIC_CACHE_NAME = 'drawnix-dynamic-v1.1.1-' + Date.now();
 
 // 🚀 自动清理旧缓存的版本列表
 const OLD_CACHE_VERSIONS = [

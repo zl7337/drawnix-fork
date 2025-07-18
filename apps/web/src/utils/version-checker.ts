@@ -1,6 +1,6 @@
 // 🔄 版本检测工具 - 自动解决缓存问题
 
-export const APP_VERSION = '1.1.0'; // 🚀 当前版本 - 双向转换功能
+export const APP_VERSION = '1.1.1'; // 🚀 当前版本 - 强制缓存破解
 
 /**
  * 检查是否有新版本可用

@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 
 import App from './app/app';
+import { checkForUpdates, forceRefresh } from './utils/version-checker';
 
 // 🚀 自动更新检测 - 解决老用户缓存问题
 if ('serviceWorker' in navigator) {
@@ -24,6 +25,10 @@ if ('serviceWorker' in navigator) {
             });
           }
         });
+
+        // 🚀 立即检查更新 - 强制缓存破解
+        registration.update().catch(console.error);
+        
       })
       .catch((error) => {
         console.log('❌ Service Worker registration failed:', error);
@@ -35,6 +40,20 @@ if ('serviceWorker' in navigator) {
         console.log('🎉 Cache updated to version:', event.data.version);
       }
     });
+
+    // 🚀 强制检查应用更新 - 每30秒检查一次
+    setInterval(async () => {
+      try {
+        const hasUpdate = await checkForUpdates();
+        if (hasUpdate) {
+          if (confirm('🔄 检测到新版本，是否立即更新？(推荐)')) {
+            await forceRefresh();
+          }
+        }
+      } catch (error) {
+        console.log('Version check failed:', error);
+      }
+    }, 30000);
   });
 }
 
