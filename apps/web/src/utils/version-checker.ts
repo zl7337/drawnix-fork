@@ -1,6 +1,7 @@
 // 🔄 版本检测工具 - 自动解决缓存问题
 
 export const APP_VERSION = '1.1.1'; // 🚀 当前版本 - 强制缓存破解
+export const BUILD_TIME = '0'; // 🏗️ 构建时间戳 - 由 Vercel 构建时更新
 
 /**
  * 检查是否有新版本可用
