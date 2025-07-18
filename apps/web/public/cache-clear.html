@@ -58,8 +58,9 @@
         </button>
         
         <div style="margin-top: 30px; font-size: 0.9em; opacity: 0.8;">
-            <p>此工具会清理所有缓存，确保您获得最新版本的 Drawnix 应用</p>
-            <p>清理完成后，您将看到带有新功能的最新版本</p>
+            <p>✅ 此工具<strong>仅清理 Drawnix 相关的缓存</strong>，不会影响其他网站数据</p>
+            <p>🔒 您的其他网站登录状态和数据将保持不变</p>
+            <p>🚀 清理完成后，您将看到带有新功能的最新版本</p>
         </div>
     </div>
 
@@ -69,33 +70,58 @@
             const clearBtn = document.getElementById('clearBtn');
             
             try {
-                statusEl.innerHTML = '🔄 正在清理缓存...';
+                statusEl.innerHTML = '🔄 正在清理 Drawnix 缓存...';
                 clearBtn.disabled = true;
                 
-                // 清理所有缓存
+                // 只清理 Drawnix 相关的缓存
                 if ('caches' in window) {
                     const cacheNames = await caches.keys();
-                    await Promise.all(
-                        cacheNames.map(cacheName => caches.delete(cacheName))
+                    const drawnixCaches = cacheNames.filter(name => 
+                        name.includes('drawnix') || 
+                        name.includes('workbox') ||
+                        name === 'v1'  // 可能的旧版本缓存
                     );
-                    console.log('✅ Cleared all caches');
+                    await Promise.all(
+                        drawnixCaches.map(cacheName => caches.delete(cacheName))
+                    );
+                    console.log('✅ Cleared Drawnix caches:', drawnixCaches);
                 }
                 
-                // 注销Service Worker
+                // 只注销当前域名的Service Worker
                 if ('serviceWorker' in navigator) {
                     const registrations = await navigator.serviceWorker.getRegistrations();
-                    await Promise.all(
-                        registrations.map(registration => registration.unregister())
+                    const currentDomainRegistrations = registrations.filter(reg => 
+                        reg.scope.includes(window.location.origin)
                     );
-                    console.log('✅ Unregistered all service workers');
+                    await Promise.all(
+                        currentDomainRegistrations.map(registration => registration.unregister())
+                    );
+                    console.log('✅ Unregistered Drawnix service workers');
                 }
                 
-                // 清理localStorage和sessionStorage
-                localStorage.clear();
-                sessionStorage.clear();
-                console.log('✅ Cleared storage');
+                // 只清理 Drawnix 相关的存储数据
+                const drawnixKeys = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && (key.includes('drawnix') || key.includes('plait'))) {
+                        drawnixKeys.push(key);
+                    }
+                }
+                drawnixKeys.forEach(key => localStorage.removeItem(key));
                 
-                statusEl.innerHTML = '✅ 缓存清理完成！现在可以访问最新版本。';
+                // 清理sessionStorage中的Drawnix数据
+                const drawnixSessionKeys = [];
+                for (let i = 0; i < sessionStorage.length; i++) {
+                    const key = sessionStorage.key(i);
+                    if (key && (key.includes('drawnix') || key.includes('plait'))) {
+                        drawnixSessionKeys.push(key);
+                    }
+                }
+                drawnixSessionKeys.forEach(key => sessionStorage.removeItem(key));
+                
+                console.log('✅ Cleared Drawnix storage data');
+                
+                statusEl.innerHTML = '✅ Drawnix 缓存清理完成！现在可以访问最新版本。';
                 statusEl.className = 'status success';
                 clearBtn.disabled = false;
                 clearBtn.innerHTML = '✅ 清理完成';
