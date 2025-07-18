@@ -1,6 +1,13 @@
-const CACHE_NAME = 'drawnix-v1.0.0';
-const STATIC_CACHE_NAME = 'drawnix-static-v1.0.0';
-const DYNAMIC_CACHE_NAME = 'drawnix-dynamic-v1.0.0';
+const CACHE_NAME = 'drawnix-v1.1.0'; // 🔄 版本更新 - 双向转换功能
+const STATIC_CACHE_NAME = 'drawnix-static-v1.1.0';
+const DYNAMIC_CACHE_NAME = 'drawnix-dynamic-v1.1.0';
+
+// 🚀 自动清理旧缓存的版本列表
+const OLD_CACHE_VERSIONS = [
+  'drawnix-v1.0.0',
+  'drawnix-static-v1.0.0', 
+  'drawnix-dynamic-v1.0.0'
+];
 
 // 需要缓存的静态资源
 const STATIC_ASSETS = [
@@ -71,12 +78,28 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE_NAME && cacheName !== DYNAMIC_CACHE_NAME) {
+          // 🧹 清理所有旧版本缓存
+          if (cacheName !== STATIC_CACHE_NAME && 
+              cacheName !== DYNAMIC_CACHE_NAME &&
+              cacheName !== CACHE_NAME) {
             console.log('Service Worker: Deleting old cache', cacheName);
+            return caches.delete(cacheName);
+          }
+          // 🚀 特别处理旧版本
+          if (OLD_CACHE_VERSIONS.includes(cacheName)) {
+            console.log('Service Worker: Force deleting old version cache', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
+    }).then(() => {
+      console.log('🎉 Service Worker: Cache cleanup completed');
+      // 🔄 通知所有客户端刷新
+      return self.clients.matchAll().then(clients => {
+        clients.forEach(client => {
+          client.postMessage({ type: 'CACHE_UPDATED', version: CACHE_NAME });
+        });
+      });
     })
   );
   

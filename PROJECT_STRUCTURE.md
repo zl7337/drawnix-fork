@@ -2,7 +2,8 @@
 
 > **开源白板工具 - 完整项目文件结构说明**  
 > 🌐 在线访问：[https://drawnix-zl7337.top](https://drawnix-zl7337.top)  
-> 📦 项目规模：191个文件，35,542行代码
+> 📦 项目规模：199个文件，36,701行代码  
+> 🔄 **最新更新：双向转换功能** - 支持 Markdown/Mermaid ↔ Drawnix 完美转换
 
 ---
 
@@ -92,6 +93,41 @@ public/
 | `src/constants.ts` | 常量定义 | 38 |
 | `src/keys.ts` | 快捷键配置 | 12 |
 
+### 🔄 双向转换系统 (新增功能)
+
+**核心特性：**
+- ✅ **Markdown ↔ Drawnix 双向转换**
+- ✅ **Mermaid ↔ Drawnix 双向转换**  
+- ✅ **导入导出内容一致性保证**
+- ✅ **连接关系和标签完整保存**
+
+**转换组件：**
+```
+src/components/ttd-dialog/
+├── 📥 导入转换组件
+│   ├── markdown-to-drawnix.tsx       # Markdown → Drawnix (156行)
+│   └── mermaid-to-drawnix.tsx        # Mermaid → Drawnix (134行)
+│
+├── 📤 导出转换组件  
+│   ├── drawnix-to-markdown.tsx       # Drawnix → Markdown (145行)
+│   └── drawnix-to-mermaid.tsx        # Drawnix → Mermaid (167行)
+│
+└── 🎨 UI增强组件
+    ├── ttd-dialog.tsx                # 统一对话框界面 (234行)
+    └── ttd-dialog.scss               # 对话框样式系统 (315行)
+```
+
+**技术实现：**
+- **文本提取优化**: 使用 `Slate.js Node.string` 正确提取文本内容
+- **连接关系检测**: 支持 `arrow-line` 类型元素和 `boundId` 匹配
+- **错误修复**: 解决 `[object Object]` 显示问题
+- **样式统一**: 完善导出对话框UI设计
+
+**快捷键支持：**
+- `Cmd+Shift+M`: 快速导出为 Markdown
+- `Cmd+Shift+D`: 快速导出为 Mermaid
+- 通过应用菜单访问所有转换功能
+
 ### 🎨 UI组件系统
 ```
 src/components/
@@ -102,8 +138,8 @@ src/components/
 │   │   ├── theme-toolbar.tsx         # 主题切换栏 (45行)
 │   │   ├── pencil-mode-toolbar.tsx   # 画笔模式栏 (34行)
 │   │   ├── app-toolbar/
-│   │   │   ├── app-toolbar.tsx       # 应用主工具栏 (89行)
-│   │   │   └── app-menu-items.tsx    # 菜单项配置 (156行)
+│   │   │   ├── app-toolbar.tsx       # 应用主工具栏 (138行)
+│   │   │   └── app-menu-items.tsx    # 菜单项配置 (270行)
 │   │   ├── popup-toolbar/
 │   │   │   ├── popup-toolbar.tsx     # 弹出工具栏 (178行)
 │   │   │   ├── fill-button.tsx       # 填充按钮 (45行)
@@ -123,7 +159,8 @@ src/components/
 │   ├── radio-group.tsx               # 单选按钮组 (67行)
 │   ├── island.tsx                    # 浮岛容器 (34行)
 │   ├── stack.tsx                     # 堆叠容器 (23行)
-│   └── icons.tsx                     # 图标组件库 (456行)
+│   ├── icons.tsx                     # 图标组件库 (571行)
+│   └── ttd-dialog.scss               # 对话框样式 (315行)
 │
 ├── 🎯 功能组件
 │   ├── menu/
@@ -154,8 +191,10 @@ src/components/
 │   │   ├── ttd-dialog-panels.tsx     # 面板容器 (45行)
 │   │   ├── ttd-dialog-output.tsx     # 输出区域 (78行)
 │   │   ├── ttd-dialog-submit-shortcut.tsx # 提交快捷键 (34行)
-│   │   ├── markdown-to-drawnix.tsx   # Markdown转换 (156行)
-│   │   └── mermaid-to-drawnix.tsx    # Mermaid转换 (134行)
+│   │   ├── markdown-to-drawnix.tsx   # Markdown导入转换 (156行)
+│   │   ├── mermaid-to-drawnix.tsx    # Mermaid导入转换 (134行)
+│   │   ├── drawnix-to-markdown.tsx   # Drawnix导出为Markdown (145行)
+│   │   └── drawnix-to-mermaid.tsx    # Drawnix导出为Mermaid (167行)
 │   │
 │   └── clean-confirm/
 │       └── clean-confirm.tsx         # 清空确认框 (67行)
@@ -319,22 +358,23 @@ src/
 ### 📈 代码规模统计
 | 类型 | 文件数 | 代码行数 | 占比 |
 |------|--------|----------|------|
-| **TypeScript/TSX** | 109 | 10,646 | 30.0% |
-| **JSON配置** | 34 | 20,462 | 57.6% |
-| **样式文件** | 21 | 1,474 | 4.1% |
-| **文档/HTML** | 17 | 2,493 | 7.0% |
+| **TypeScript/TSX** | 113 | 11,458 | 31.2% |
+| **JSON配置** | 34 | 20,462 | 55.7% |
+| **样式文件** | 22 | 1,789 | 4.9% |
+| **文档/HTML** | 20 | 2,825 | 7.7% |
 | **JavaScript** | 10 | 467 | 1.3% |
-| **总计** | **191** | **35,542** | **100%** |
+| **总计** | **199** | **36,701** | **100%** |
 
 ### 🎯 功能模块分布
 ```
 📊 核心功能分布：
-├── 🎨 UI组件系统 (35%) - 用户界面交互
-├── 🔌 插件系统 (25%) - 功能扩展架构
-├── 🛠️ 工具函数 (20%) - 数据处理逻辑
-├── 📊 数据管理 (10%) - 存储和导入导出
-├── 🧪 测试系统 (5%) - 质量保证
-└── ⚙️ 配置文件 (5%) - 构建和部署
+├── 🎨 UI组件系统 (33%) - 用户界面交互
+├── 🔌 插件系统 (24%) - 功能扩展架构
+├── 🛠️ 工具函数 (19%) - 数据处理逻辑
+├── � 双向转换 (12%) - 导入导出功能 [新增]
+├── �📊 数据管理 (7%) - 存储和文件操作
+├── 🧪 测试系统 (3%) - 质量保证
+└── ⚙️ 配置文件 (2%) - 构建和部署
 ```
 
 ### 🚀 技术栈特点
@@ -343,6 +383,7 @@ src/
 - **📱 渐进式**: PWA支持 + 离线功能
 - **🎨 专业级**: 企业级UI组件库
 - **⚡ 高性能**: 智能缓存 + 代码分割
+- **🔄 双向转换**: Markdown/Mermaid ↔ Drawnix [新增]
 - **🌍 国际化**: 多语言支持准备
 
 ---
@@ -354,7 +395,18 @@ src/
 - 📖 **原项目文档**: [Drawnix Official](https://github.com/plait-board/drawnix)
 - 🔧 **技术栈文档**: [Nx](https://nx.dev) | [React](https://reactjs.org) | [Vite](https://vitejs.dev)
 
+### 📋 项目文档
+- 📄 **导入导出修复**: `IMPORT_EXPORT_CONSISTENCY_FIX.md`
+- 🔧 **对象序列化修复**: `OBJECT_SERIALIZATION_FIX.md`
+- 🏗️ **项目结构说明**: `PROJECT_STRUCTURE.md` (本文档)
+
+### 🚀 部署相关
+- ☁️ **CloudFlare部署**: `CFPAGE-DEPLOY.md`
+- 📋 **版本更新日志**: `CHANGELOG.md`
+- 🌐 **域名配置**: `update-domain.js`
+
 ---
 
 *📅 最后更新：2025年7月18日*  
-*✨ 由 GitHub Copilot 自动生成*
+*🔄 本次更新：新增双向转换功能 (Markdown/Mermaid ↔ Drawnix)*  
+*✨ 由 GitHub Copilot 自动生成和维护*
