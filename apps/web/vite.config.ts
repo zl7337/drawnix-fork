@@ -41,8 +41,8 @@ export default defineConfig({
         manualChunks: {
           vendor: ['react', 'react-dom'],
           drawnix: ['@drawnix/drawnix'],
-          board: ['@drawnix/react-board'],
-          text: ['@drawnix/react-text']
+          board: ['@plait-board/react-board'],
+          text: ['@plait-board/react-text']
         }
       }
     }
