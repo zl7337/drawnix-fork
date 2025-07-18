@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔄 Drawnix 缓存清理工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        h1 { font-size: 2.5em; margin-bottom: 20px; }
+        .emoji { font-size: 4em; margin: 20px 0; }
+        .status { font-size: 1.2em; margin: 20px 0; }
+        .btn {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .success { color: #10b981; }
+        .loading { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Drawnix 缓存清理</h1>
+        <div class="emoji">🧹</div>
+        
+        <div class="status" id="status">
+            正在清理缓存和Service Worker...
+        </div>
+        
+        <button class="btn" onclick="clearAllCaches()" id="clearBtn">
+            🗑️ 手动清理缓存
+        </button>
+        
+        <button class="btn" onclick="goToApp()" id="goBtn">
+            🚀 访问应用
+        </button>
+        
+        <div style="margin-top: 30px; font-size: 0.9em; opacity: 0.8;">
+            <p>此工具会清理所有缓存，确保您获得最新版本的 Drawnix 应用</p>
+            <p>清理完成后，您将看到带有新功能的最新版本</p>
+        </div>
+    </div>
+
+    <script>
+        async function clearAllCaches() {
+            const statusEl = document.getElementById('status');
+            const clearBtn = document.getElementById('clearBtn');
+            
+            try {
+                statusEl.innerHTML = '🔄 正在清理缓存...';
+                clearBtn.disabled = true;
+                
+                // 清理所有缓存
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(
+                        cacheNames.map(cacheName => caches.delete(cacheName))
+                    );
+                    console.log('✅ Cleared all caches');
+                }
+                
+                // 注销Service Worker
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(
+                        registrations.map(registration => registration.unregister())
+                    );
+                    console.log('✅ Unregistered all service workers');
+                }
+                
+                // 清理localStorage和sessionStorage
+                localStorage.clear();
+                sessionStorage.clear();
+                console.log('✅ Cleared storage');
+                
+                statusEl.innerHTML = '✅ 缓存清理完成！现在可以访问最新版本。';
+                statusEl.className = 'status success';
+                clearBtn.disabled = false;
+                clearBtn.innerHTML = '✅ 清理完成';
+                
+            } catch (error) {
+                console.error('Cache clear failed:', error);
+                statusEl.innerHTML = '❌ 清理失败，请尝试手动清理浏览器缓存';
+                clearBtn.disabled = false;
+            }
+        }
+        
+        function goToApp() {
+            // 添加时间戳确保获取最新版本
+            window.location.href = '/?t=' + Date.now();
+        }
+        
+        // 页面加载时自动清理
+        window.addEventListener('load', () => {
+            setTimeout(clearAllCaches, 1000);
+        });
+    </script>
+</body>
+</html>
