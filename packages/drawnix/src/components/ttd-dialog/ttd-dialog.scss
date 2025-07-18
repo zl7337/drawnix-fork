@@ -319,4 +319,112 @@ $verticalBreakpoint: 861px;
       border-radius: 4px;
     }
   }
+
+  // 导出对话框样式
+  .ttd-dialog-content {
+    .ttd-dialog-header {
+      margin-bottom: 1.5rem;
+      
+      h2 {
+        margin: 0 0 0.5rem 0;
+        color: var(--color-on-surface);
+        font-size: 1.25rem;
+        font-weight: 600;
+      }
+      
+      p {
+        margin: 0;
+        color: var(--color-on-surface-variant);
+        font-size: 0.875rem;
+      }
+    }
+
+    .ttd-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .ttd-button {
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      border: 1px solid transparent;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &-primary {
+        background-color: var(--color-primary);
+        color: var(--color-on-primary);
+        
+        &:hover:not(:disabled) {
+          background-color: var(--color-primary-hover);
+        }
+      }
+
+      &-secondary {
+        background-color: var(--color-surface-variant);
+        color: var(--color-on-surface-variant);
+        border-color: var(--color-outline);
+        
+        &:hover:not(:disabled) {
+          background-color: var(--color-surface-variant-hover);
+        }
+      }
+    }
+
+    .ttd-textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--color-outline);
+      border-radius: 0.375rem;
+      background-color: var(--color-surface);
+      color: var(--color-on-surface);
+      font-size: 0.875rem;
+      line-height: 1.5;
+      resize: vertical;
+
+      &:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 1px var(--color-primary);
+      }
+    }
+
+    .ttd-dialog-info {
+      h4 {
+        margin: 0 0 0.75rem 0;
+        color: var(--color-on-surface);
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      ul {
+        margin: 0 0 1rem 0;
+        padding-left: 1.25rem;
+        color: var(--color-on-surface-variant);
+        font-size: 0.875rem;
+        line-height: 1.6;
+
+        li {
+          margin-bottom: 0.25rem;
+        }
+      }
+
+      a {
+        color: var(--color-primary);
+        text-decoration: underline;
+        
+        &:hover {
+          text-decoration: none;
+        }
+      }
+    }
+  }
 }

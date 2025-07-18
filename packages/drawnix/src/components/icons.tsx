@@ -533,3 +533,39 @@ export const LinkIcon = createIcon(
     </g>
   </svg>
 );
+
+export const ExportMarkdownIcon = createIcon(
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g
+      strokeWidth="1.25"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    >
+      <path stroke="none" d="M0 0h24v24H0z"></path>
+      <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+      <path d="M7 15v-6l2 2 2 -2v6"></path>
+      <path d="M14 13l2 2l2 -2m-2 2v-6"></path>
+    </g>
+  </svg>
+);
+
+export const ExportMermaidIcon = createIcon(
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g
+      strokeWidth="1.25"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    >
+      <path stroke="none" d="M0 0h24v24H0z"></path>
+      <rect x="3" y="3" width="6" height="6" rx="1"></rect>
+      <rect x="15" y="15" width="6" height="6" rx="1"></rect>
+      <path d="M9 6h1a2 2 0 0 1 2 2v6a2 2 0 0 1 2 2h1"></path>
+      <path d="M12 8l2 -2"></path>
+      <path d="M12 8l2 2"></path>
+    </g>
+  </svg>
+);

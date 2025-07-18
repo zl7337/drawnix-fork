@@ -1,6 +1,8 @@
 import {
   ExportImageIcon,
   ExportPDFIcon,
+  ExportMarkdownIcon,
+  ExportMermaidIcon,
   GithubIcon,
   OpenFileIcon,
   SaveFileIcon,
@@ -21,6 +23,7 @@ import MenuItemLink from '../../menu/menu-item-link';
 import { saveAsImage } from '../../../utils/image';
 import { saveAsPDF } from '../../../utils/pdf';
 import { useDrawnix } from '../../../hooks/use-drawnix';
+import { DialogType } from '../../../hooks/use-drawnix';
 import Menu from '../../menu/menu';
 import { useContext } from 'react';
 import { MenuContentPropsContext } from '../../menu/common';
@@ -222,3 +225,45 @@ export const Socials = () => {
   );
 };
 Socials.displayName = 'Socials';
+
+export const ExportToMarkdown = () => {
+  const { appState, setAppState } = useDrawnix();
+  return (
+    <MenuItem
+      icon={ExportMarkdownIcon}
+      data-testid="markdown-export-button"
+      onSelect={() => {
+        setAppState({
+          ...appState,
+          openDialogType: DialogType.drawnixToMarkdown,
+        });
+      }}
+      shortcut={`Cmd+Shift+M`}
+      aria-label={'导出为 Markdown'}
+    >
+      {'导出为 Markdown'}
+    </MenuItem>
+  );
+};
+ExportToMarkdown.displayName = 'ExportToMarkdown';
+
+export const ExportToMermaid = () => {
+  const { appState, setAppState } = useDrawnix();
+  return (
+    <MenuItem
+      icon={ExportMermaidIcon}
+      data-testid="mermaid-export-button"
+      onSelect={() => {
+        setAppState({
+          ...appState,
+          openDialogType: DialogType.drawnixToMermaid,
+        });
+      }}
+      shortcut={`Cmd+Shift+D`}
+      aria-label={'导出为 Mermaid'}
+    >
+      {'导出为 Mermaid'}
+    </MenuItem>
+  );
+};
+ExportToMermaid.displayName = 'ExportToMermaid';
