@@ -6,6 +6,7 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 export default defineConfig({
   root: __dirname,
   cacheDir: '../../node_modules/.vite/apps/web',
+  base: './',  // 使用相对路径，确保在 Vercel 等平台上正确加载资源
 
   server: {
     port: 7200,
