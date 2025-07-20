@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 
-import App from './app/app-simple';
+import App from './app/app';
 import { checkForUpdates, forceRefresh } from './utils/version-checker';
 
 // 🔍 检测老用户缓存问题并提供解决方案
