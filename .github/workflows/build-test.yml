@@ -29,8 +29,14 @@ jobs:
     - name: Check build output
       run: |
         echo "Checking if build output exists..."
-        ls -la dist/apps/web/
-        echo "Build completed successfully! ✅"
+        if [ -d "dist/apps/web" ]; then
+          echo "✅ Build output directory exists"
+          ls -la dist/apps/web/ | head -10
+          echo "Build completed successfully! ✅"
+        else
+          echo "❌ Build output directory not found"
+          exit 1
+        fi
         
     - name: Upload build artifacts (optional)
       uses: actions/upload-artifact@v3
