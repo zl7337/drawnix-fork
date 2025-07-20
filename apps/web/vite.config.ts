@@ -25,6 +25,13 @@ export default defineConfig({
   //  plugins: [ nxViteTsPaths() ],
   // },
 
+  resolve: {
+    alias: {
+      'react': 'react',
+      'react-dom': 'react-dom'
+    }
+  },
+
   build: {
     outDir: '../../dist/apps/web',
     emptyOutDir: true,
@@ -41,9 +48,7 @@ export default defineConfig({
         // 手动分割代码，确保核心功能更新时能被检测到
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          drawnix: ['@drawnix/drawnix'],
-          board: ['@plait-board/react-board'],
-          text: ['@plait-board/react-text']
+          drawnix: ['@drawnix/drawnix']
         }
       }
     }
