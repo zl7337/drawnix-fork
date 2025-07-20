@@ -4,7 +4,7 @@ import * as ReactDOM from 'react-dom/client';
 import App from './app/app';
 import { checkForUpdates, forceRefresh } from './utils/version-checker';
 
-// 🔍 检测老用户缓存问题并提供解决方案
+// 🔍 检测老用户缓存问题并提供解决方案 - v2.0
 function checkAndHandleOldUserCache() {
   // 检测是否为老用户（之前访问过的用户）
   const hasVisitedBefore = localStorage.getItem('drawnix-visited') || sessionStorage.getItem('drawnix-visited');
