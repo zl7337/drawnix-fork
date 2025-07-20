@@ -1,0 +1,40 @@
+name: Build Test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build web application
+      run: npm run build:web
+      
+    - name: Check build output
+      run: |
+        echo "Checking if build output exists..."
+        ls -la dist/apps/web/
+        echo "Build completed successfully! ✅"
+        
+    - name: Upload build artifacts (optional)
+      uses: actions/upload-artifact@v3
+      with:
+        name: web-build
+        path: dist/apps/web/
+        retention-days: 1
