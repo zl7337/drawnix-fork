@@ -265,17 +265,21 @@
         e.preventDefault();
         deferredPrompt = e;
         
+        // 检测Windows系统
+        const isWindows = navigator.platform.toLowerCase().includes('win') || 
+                         navigator.userAgent.toLowerCase().includes('windows');
+        
         // 创建安装按钮
         if (!installButton) {
           installButton = document.createElement('button');
-          installButton.textContent = '📱 安装应用';
+          installButton.textContent = isWindows ? '�️ 安装到Windows' : '�📱 安装应用';
           installButton.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 10000;
             padding: 12px 16px;
-            background: #2196f3;
+            background: ${isWindows ? '#0078d4' : '#2196f3'};
             color: white;
             border: none;
             border-radius: 8px;
@@ -283,14 +287,17 @@
             font-size: 14px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
+            font-family: system-ui, -apple-system, sans-serif;
           `;
           
           installButton.addEventListener('mouseenter', () => {
             installButton.style.transform = 'scale(1.05)';
+            installButton.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
           });
           
           installButton.addEventListener('mouseleave', () => {
             installButton.style.transform = 'scale(1)';
+            installButton.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
           });
           
           installButton.addEventListener('click', async () => {
@@ -301,6 +308,7 @@
               
               if (outcome === 'accepted') {
                 console.log('用户接受了 PWA 安装');
+                showInstallSuccessMessage(isWindows);
               } else {
                 console.log('用户拒绝了 PWA 安装');
               }
@@ -312,8 +320,94 @@
           });
           
           document.body.appendChild(installButton);
+          
+          // Windows特殊处理：显示额外提示
+          if (isWindows) {
+            setTimeout(() => {
+              showWindowsInstallTip();
+            }, 3000);
+          }
         }
       });
+      
+      // 显示Windows安装提示
+      function showWindowsInstallTip() {
+        const tip = document.createElement('div');
+        tip.className = 'windows-install-tip';
+        tip.innerHTML = `
+          <div style="
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: #0078d4;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-family: system-ui, -apple-system, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+          ">
+            <div style="font-weight: bold; margin-bottom: 8px;">
+              💡 在Windows上安装Drawnix
+            </div>
+            <div style="margin-bottom: 12px;">
+              • Edge: 地址栏中的"安装应用"图标<br>
+              • Chrome: 地址栏右侧的安装按钮<br>
+              • 安装后可从开始菜单启动
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                   style="background: rgba(255,255,255,0.2); color: white; border: none;
+                           padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+              知道了
+            </button>
+          </div>
+        `;
+        document.body.appendChild(tip);
+        
+        // 10秒后自动移除
+        setTimeout(() => {
+          if (tip.parentNode) {
+            tip.remove();
+          }
+        }, 10000);
+      }
+      
+      // 显示安装成功消息
+      function showInstallSuccessMessage(isWindows) {
+        const message = document.createElement('div');
+        message.innerHTML = `
+          <div style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10001;
+            background: #4caf50;
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-family: system-ui, -apple-system, sans-serif;
+          ">
+            <div style="font-size: 48px; margin-bottom: 16px;">🎉</div>
+            <div style="font-weight: bold; margin-bottom: 8px; font-size: 18px;">
+              安装成功！
+            </div>
+            <div style="font-size: 14px; opacity: 0.9;">
+              ${isWindows ? 'Drawnix已添加到您的Windows应用中' : 'Drawnix已安装到您的设备'}
+            </div>
+          </div>
+        `;
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+          message.remove();
+        }, 4000);
+      }
       
       // 检测应用是否已安装
       window.addEventListener('appinstalled', (e) => {
