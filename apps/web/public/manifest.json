@@ -3,13 +3,13 @@
   "short_name": "Drawnix",
   "version": "1.1.1",
   "description": "强大的开源白板工具，支持思维导图、流程图、PDF导出等功能。现已支持PWA安装！新增双向转换功能：Markdown/Mermaid ↔ Drawnix",
-  "start_url": "https://drawnix-zl7337.top/",
-  "id": "https://drawnix-zl7337.top/",
+  "start_url": "/",
+  "scope": "/",
+  "id": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2196f3",
   "orientation": "any",
-  "scope": "/",
   "lang": "zh-CN",
   "categories": [
     "productivity",
@@ -20,19 +20,20 @@
     {
       "src": "/favicon.ico",
       "sizes": "48x48",
-      "type": "image/x-icon"
+      "type": "image/x-icon",
+      "purpose": "any"
     },
     {
       "src": "/logo/logo_drawnix_h.svg",
       "sizes": "192x192",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/logo/logo_drawnix_h.svg",
-      "sizes": "512x512",
+      "sizes": "512x512", 
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
@@ -40,13 +41,15 @@
       "src": "/product_showcase/case-1.png",
       "sizes": "1280x720",
       "type": "image/png",
-      "form_factor": "wide"
+      "form_factor": "wide",
+      "label": "DrawniX 思维导图功能展示"
     },
     {
-      "src": "/product_showcase/case-2.png",
+      "src": "/product_showcase/case-2.png", 
       "sizes": "1280x720",
       "type": "image/png",
-      "form_factor": "wide"
+      "form_factor": "wide",
+      "label": "DrawniX 流程图功能展示"
     }
   ],
   "shortcuts": [
@@ -57,10 +60,11 @@
       "url": "/",
       "icons": [
         {
-          "src": "/logo/logo_drawnix_h.svg",
-          "sizes": "96x96"
+          "src": "/favicon.ico",
+          "sizes": "48x48"
         }
       ]
     }
-  ]
+  ],
+  "prefer_related_applications": false
 }
