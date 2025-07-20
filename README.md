@@ -126,4 +126,4 @@ docker pull pubuzhixing/drawnix:latest
 
 ## License
 
-[MIT License](https://github.com/plait-board/drawnix/blob/master/LICENSE)  
+[MIT License](https://github.com/plait-board/drawnix/blob/master/LICENSE)  // Force redeploy with fixed dependencies 2025年 7月20日 星期日 22时29分29秒 CST
