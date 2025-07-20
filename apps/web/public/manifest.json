@@ -7,7 +7,6 @@
   "scope": "/",
   "id": "/",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#ffffff",
   "theme_color": "#2196f3",
   "orientation": "any",
@@ -85,11 +84,5 @@
       ]
     }
   ],
-  "prefer_related_applications": false,
-  "edge_side_panel": {
-    "preferred_width": 400
-  },
-  "scope_extensions": [
-    {"origin": "*.drawnix-zl7337.top"}
-  ]
+  "prefer_related_applications": false
 }
