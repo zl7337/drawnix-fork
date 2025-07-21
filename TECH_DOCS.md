@@ -9,6 +9,7 @@ Drawnix 是一个开源白板工具，基于 Nx 单体仓库架构，支持思�
 - **构建工具**: Vite 6.2.2 + Nx 19.3.0
 - **部署平台**: Vercel + 自定义域名 (drawnix-zl7337.top)
 - **PWA支持**: 完整的渐进式Web应用支持
+- **🔥 核心功能**: Markdown/Mermaid ↔ Drawnix 双向转换
 
 ## � 我们完成的所有修改
 
@@ -194,7 +195,231 @@ build: {
 - 解决 PDF 放大缩小卡顿问题
 - 平衡文件大小和渲染性能
 
-### 6. 文档整理和规范化 ✅
+### 6. 新增 Markdown/Mermaid 双向转换功能 ✅ 🔥
+
+**🚀 核心新功能**: 支持 Markdown ↔ Drawnix 和 Mermaid ↔ Drawnix 的双向转换
+
+#### 功能概述
+- **Markdown → Drawnix**: 将 Markdown 文档转换为思维导图
+- **Drawnix → Markdown**: 将思维导图导出为 Markdown 格式
+- **Mermaid → Drawnix**: 将 Mermaid 语法转换为可视化图表
+- **Drawnix → Mermaid**: 将绘图内容导出为 Mermaid 代码
+
+#### 技术实现
+
+**核心组件结构**:
+```typescript
+// packages/drawnix/src/hooks/use-drawnix.tsx
+export enum DialogType {
+  mermaidToDrawnix = 'mermaidToDrawnix',
+  markdownToDrawnix = 'markdownToDrawnix', 
+  drawnixToMarkdown = 'drawnixToMarkdown',
+  drawnixToMermaid = 'drawnixToMermaid',
+}
+```
+
+**主要组件**:
+- `packages/drawnix/src/components/ttd-dialog/markdown-to-drawnix.tsx`
+- `packages/drawnix/src/components/ttd-dialog/drawnix-to-markdown.tsx`
+- `packages/drawnix/src/components/ttd-dialog/mermaid-to-drawnix.tsx`
+- `packages/drawnix/src/components/ttd-dialog/drawnix-to-mermaid.tsx`
+
+**UI集成**:
+```tsx
+// packages/drawnix/src/components/toolbar/extra-tools/menu-items.tsx
+export const MermaidToDrawnixItem = () => {
+  const { appState, setAppState } = useDrawnix();
+  return (
+    <MenuItem
+      data-testid="marmaid-to-drawnix-button"
+      onSelect={() => {
+        setAppState({
+          ...appState,
+          openDialogType: DialogType.mermaidToDrawnix,
+        });
+      }}
+      icon={MermaidLogoIcon}
+      aria-label="Mermaid 到 Drawnix"
+    >Mermaid 到 Drawnix</MenuItem>
+  );
+};
+
+export const MarkdownToDrawnixItem = () => {
+  const { appState, setAppState } = useDrawnix();
+  return (
+    <MenuItem
+      data-testid="markdown-to-drawnix-button"
+      onSelect={() => {
+        setAppState({
+          ...appState,
+          openDialogType: DialogType.markdownToDrawnix,
+        });
+      }}
+      icon={MarkdownLogoIcon}
+      aria-label="Markdown 到 Drawnix"
+    >Markdown 到 Drawnix</MenuItem>
+  );
+};
+```
+
+#### Markdown 转换功能详情
+
+**支持的 Markdown 语法**:
+```markdown
+# 主标题 (转换为根节点)
+## 二级标题 (转换为一级分支)
+### 三级标题 (转换为二级分支)
+#### 四级标题 (转换为三级分支)
+
+- 列表项 (转换为思维导图节点)
+  - 子列表项 (转换为子节点)
+    - 深层嵌套 (支持多层嵌套)
+
+# 示例
+- 项目管理 🚀
+  - 需求分析 📋
+    - 用户调研 👥
+    - 功能设计 ⚙️
+  - 开发阶段 💻
+    - 前端开发 🎨
+    - 后端开发 🔧
+```
+
+**核心转换逻辑**:
+```typescript
+// drawnix-to-markdown.tsx 核心代码片段
+const extractTitleText = (element: MindElement): string => {
+  if (!element.data) return '未命名节点';
+  
+  const topic = element.data.topic;
+  
+  // 处理字符串类型
+  if (typeof topic === 'string') {
+    return topic || '未命名节点';
+  }
+  
+  // 处理 Slate.js ParagraphElement 结构
+  if (topic && typeof topic === 'object' && Array.isArray(topic.children)) {
+    return topic.children
+      .map((child: any) => {
+        if (typeof child === 'string') return child;
+        if (child && child.text) return child.text;
+        return '';
+      })
+      .join('');
+  }
+  
+  return '未命名节点';
+};
+
+// 递归构建 Markdown 结构
+const buildMarkdownFromNode = (
+  element: MindElement, 
+  level: number = 1
+): string => {
+  const title = extractTitleText(element);
+  const indent = '  '.repeat(level - 1);
+  const prefix = level === 1 ? '#' : '-';
+  
+  let markdown = `${indent}${prefix} ${title}\n`;
+  
+  // 递归处理子节点
+  if (element.children && element.children.length > 0) {
+    element.children.forEach((child) => {
+      if (isMindElement(child)) {
+        markdown += buildMarkdownFromNode(child, level + 1);
+      }
+    });
+  }
+  
+  return markdown;
+};
+```
+
+#### Mermaid 转换功能详情
+
+**支持的 Mermaid 图表类型**:
+- **思维导图**: `mindmap`
+- **流程图**: `flowchart`
+- **序列图**: `sequenceDiagram`
+- **甘特图**: `gantt`
+- **类图**: `classDiagram`
+
+**Mermaid 示例**:
+```mermaid
+mindmap
+  root)项目管理(
+    需求分析
+      用户调研
+      功能设计
+    开发阶段
+      前端开发
+      后端开发
+    测试部署
+      单元测试
+      集成测试
+      生产部署
+```
+
+#### 用户体验优化
+
+**TTD Dialog (Text To Diagram) 组件**:
+- 实时预览功能
+- 语法高亮显示
+- 错误提示和修正建议
+- 键盘快捷键支持 (Ctrl+Enter 提交)
+- 响应式设计，支持移动端
+
+**示例数据提供**:
+```typescript
+// markdown-to-drawnix.tsx 中的示例
+const MARKDOWN_EXAMPLE = `# 我开始了
+
+- 让我看看是谁搞出了这个 bug 🕵️‍♂️ 🔍
+  - 😯 💣
+    - 原来是我 👈 🎯 💘
+
+- 竟然不可以运行，为什么呢 🚫 ⚙️ ❓
+  - 竟然可以运行了，为什么呢？🎢 ✨
+    - 🤯 ⚡ ➡️ 🎉
+
+- 能运行起来的 🐞 🚀
+  - 就不要去动它 🛑 ✋
+    - 👾 💥 🏹 🎯
+    
+## 男孩还是女孩 👶 ❓ 🤷‍♂️ ♀️
+
+### Hello world 👋 🌍 ✨ 💻
+
+#### 哇 是个程序员 🤯 ⌨️ 💡 👩‍💻`;
+```
+
+#### 技术亮点
+
+**性能优化**:
+- 使用 `useDeferredValue` 实现输入防抖
+- 异步解析，避免阻塞 UI
+- 增量更新，只重新渲染变化部分
+
+**错误处理**:
+- 语法错误检测和提示
+- 格式验证和自动修正
+- 优雅的降级处理
+
+**可扩展性**:
+- 插件式架构，易于添加新格式支持
+- 标准化的转换接口
+- 模块化的组件设计
+
+#### 使用场景
+
+1. **文档转换**: 将现有 Markdown 文档快速转换为可视化思维导图
+2. **会议记录**: 将会议纪要转换为结构化的思维导图
+3. **知识管理**: 在文本和可视化之间自由切换
+4. **团队协作**: 不同偏好的团队成员可以使用各自熟悉的格式
+5. **教学演示**: 将课程大纲快速转换为可视化教学工具
+
+### 7. 文档整理和规范化 ✅
 
 **删除的重复文档**:
 - PWA_DEPLOYMENT_GUIDE.md
@@ -322,6 +547,8 @@ cadde9a Add vercel.json configuration for custom domain support
 - ✅ 移动端访问正常
 - ✅ React 依赖冲突已解决
 - ✅ 静态资源加载正常
+- ✅ Markdown/Mermaid 双向转换功能正常
+- ✅ TTD Dialog 交互体验良好
 
 ### 测试命令
 ```bash
